@@ -119,8 +119,8 @@ export default function LoginPage() {
                     src={Logo} 
                     alt="Analytics Hub Logo" 
                     style={{ 
-                      width: 150, 
-                      height: 40, 
+                      width: 200, 
+                      height: 50, 
                       objectFit: "fill",
                       color:"black" 
                     }} 
@@ -206,10 +206,6 @@ export default function LoginPage() {
               </Box>
             </Grid>
           </Grid>
-      </Box>
-
-      <Box component="footer" sx={{ bgcolor: 'primary.main', color: '#fff', py: 1.5, textAlign: 'center' }}>
-        <Typography variant="body2">© {new Date().getFullYear()} Data and Analytics Practice – Analytics Hub. All Rights Reserved.</Typography>
       </Box>
 
       <Snackbar open={!!errorMsg} autoHideDuration={6000} onClose={() => setErrorMsg("")} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>

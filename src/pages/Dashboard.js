@@ -48,7 +48,7 @@ import remarkGfm from "remark-gfm";
 import ScaledDashboardPreview from "../components/ScaledDashboardPreview";
 import DynamicDashboard from "../components/DynamicDashboard";
 import ChatWithTableComponent from "../components/ChatWithTableComponent"; 
-import Logo from "../assets/analytics_hub_logo.png"; 
+import Logo from "../assets/analytics_hub_logo_with_text1.png"; 
 import { formatNumber } from "../utils/formatNumber"; 
 
 const API_URL = window.env.API_URL;
@@ -184,13 +184,10 @@ export default function Dashboard() {
       >
         <Toolbar>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <img src={Logo} alt="Analytics Hub" style={{ width: 50, height: 50, objectFit: "contain" }} />
-            <Typography variant="h6" noWrap sx={{ fontWeight: 700, color: "#fff", userSelect: "none" }}>
-              Data & Analytics Practice — Analytix Hub
-            </Typography>
+            <img src={Logo} alt="Analytics Hub" style={{ width: 250, height: 50, objectFit: "contain" }} />
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 30, marginRight: -5 }}>
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 45, marginRight: -5 }}>
             <TextField
               placeholder="Search dashboards, questions, users..."
               size="small"

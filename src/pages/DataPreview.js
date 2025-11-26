@@ -39,7 +39,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import MiniSidebar from "./MiniSidebar";
 import Sidebar from "../components/Sidebar";
 import axios from "axios";
-import Logo from "../assets/analytics_hub_logo.png"; 
+import Logo from "../assets/analytics_hub_logo_with_text1.png"; 
 
 const API_URL = window.env.API_URL;
 const fileInputAccept = ".csv, .xls, .xlsx, .tsv, .json, .parquet";
@@ -432,15 +432,12 @@ export default function DataPreview() {
           
           {/* --- UNIFIED BRANDING --- */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <img src={Logo} alt="Analytics Hub" style={{ width: 50, height: 50, objectFit: "contain" }} />
-            <Typography variant="h6" noWrap sx={{ fontWeight: 700, color: "#fff", userSelect: "none" }}>
-              Data & Analytics Practice — Analytix Hub
-            </Typography>
+            <img src={Logo} alt="Analytics Hub" style={{ width: 250, height: 50, objectFit: "contain" }} />
           </Box>
           {/* ----------------------- */}
 
           {/* --- SEARCH BAR --- */}
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 30, marginRight: -5 }}>
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 45, marginRight: -5 }}>
             <TextField
               placeholder="Search dashboards, questions, users..."
               size="small"
