@@ -1705,11 +1705,11 @@ export default function MetadataDocumentation() {
         <Toolbar>
           {/* --- UNIFIED BRANDING --- */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <img src={Logo} alt="Analytics Hub" style={{ width: 250, height: 50, objectFit: "contain" }} />
+            <img src={Logo} alt="Analytics Hub" style={{ width: 250, height: 50, objectFit: "contain", marginLeft: -30  }} />
           </Box>
 
           {/* --- SEARCH BAR COMPONENT --- */}
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 45, marginRight: -5 }}>
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 60, marginRight: -5 }}>
             <TextField
               placeholder="Search dashboards, questions, users..."
               size="small"

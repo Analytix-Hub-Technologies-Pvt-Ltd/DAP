@@ -38,7 +38,8 @@ import {
     BubbleChart as ScatterChartIcon,
     Assessment as AssessmentIcon,
 } from "@mui/icons-material";
-import { formatNumber } from "../utils/formatNumber"; // <-- IMPORTED
+import { formatNumber } from "../utils/formatNumber"; 
+import { useAuth } from "../contexts/AuthContext"; // <-- IMPORTED
 
 // Colors for Pie chart
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8", "#FF00FF"];
@@ -54,7 +55,7 @@ const KpiCard = ({ title, value }) => (
             alignItems: "center",
             justifyContent: "center",
             borderRadius: 2,
-            bgcolor: "background.paper", // <-- Theme-aware
+            bgcolor: "background.paper", 
             height: "100%",
         }}
     >
@@ -69,7 +70,7 @@ const KpiCard = ({ title, value }) => (
         <Typography
             variant="h6"
             fontWeight="700"
-            color="text.primary" // <-- Theme-aware
+            color="text.primary" 
             align="center"
         >
             {formatNumber(value)}
@@ -79,6 +80,7 @@ const KpiCard = ({ title, value }) => (
 
 // --- Reusable Chart Rendering Component ---
 const RenderChart = ({ spec, data }) => {
+    const { currency } = useAuth(); // <-- Get Currency
     const { type, title, keys } = spec;
 
     const chartIcon = {
@@ -88,14 +90,22 @@ const RenderChart = ({ spec, data }) => {
         scatter: <ScatterChartIcon color="primary" />,
     }[type];
 
+    // Helper to format full value with currency
+    const formatTooltip = (value) => {
+        if (typeof value === 'number') {
+            return `${currency}${value.toLocaleString()}`;
+        }
+        return value;
+    };
+
     return (
         <Paper
             elevation={3}
-            sx={{ p: 2, borderRadius: 3, height: "400px", width: "100%" }} // <-- Made width 100%
+            sx={{ p: 2, borderRadius: 3, height: "400px", width: "100%" }}
         >
             <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
                 {chartIcon}
-                <Typography variant="h6" sx={{ ml: 1, fontWeight: 600, color: 'text.primary' }}> {/* <-- Theme-aware */}
+                <Typography variant="h6" sx={{ ml: 1, fontWeight: 600, color: 'text.primary' }}>
                     {title || "Chart"}
                 </Typography>
             </Box>
@@ -106,9 +116,12 @@ const RenderChart = ({ spec, data }) => {
                         margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey={keys.x} stroke="text.secondary" /> {/* <-- Theme-aware */}
-                        <YAxis stroke="text.secondary" tickFormatter={formatNumber} /> {/* <-- Theme-aware */}
-                        <Tooltip wrapperStyle={{ zIndex: 1100 }} formatter={(value) => formatNumber(value)} />
+                        <XAxis dataKey={keys.x} stroke="text.secondary" />
+                        <YAxis stroke="text.secondary" tickFormatter={formatNumber} />
+                        <Tooltip 
+                            wrapperStyle={{ zIndex: 1100 }} 
+                            formatter={formatTooltip} // <-- Updated Formatter
+                        />
                         <Legend />
                         <Bar dataKey={keys.y} fill="#009CDE" />
                     </BarChart>
@@ -119,9 +132,12 @@ const RenderChart = ({ spec, data }) => {
                         margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey={keys.x} stroke="text.secondary" /> {/* <-- Theme-aware */}
-                        <YAxis stroke="text.secondary" tickFormatter={formatNumber} /> {/* <-- Theme-aware */}
-                        <Tooltip wrapperStyle={{ zIndex: 1100 }} formatter={(value) => formatNumber(value)} />
+                        <XAxis dataKey={keys.x} stroke="text.secondary" />
+                        <YAxis stroke="text.secondary" tickFormatter={formatNumber} />
+                        <Tooltip 
+                            wrapperStyle={{ zIndex: 1100 }} 
+                            formatter={formatTooltip} // <-- Updated Formatter
+                        />
                         <Legend />
                         <Line
                             type="monotone"
@@ -160,19 +176,22 @@ const RenderChart = ({ spec, data }) => {
                                 />
                             ))}
                         </Pie>
-                        <Tooltip wrapperStyle={{ zIndex: 1100 }} formatter={(value) => formatNumber(value)} />
+                        <Tooltip 
+                            wrapperStyle={{ zIndex: 1100 }} 
+                            formatter={formatTooltip} // <-- Updated Formatter
+                        />
                         <Legend />
                     </PieChart>
                 )}
                 {type === "scatter" && keys?.x && keys?.y && (
                     <ScatterChart margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey={keys.x} name={keys.x} stroke="text.secondary" tickFormatter={formatNumber} /> {/* <-- Theme-aware */}
-                        <YAxis dataKey={keys.y} name={keys.y} stroke="text.secondary" tickFormatter={formatNumber} /> {/* <-- Theme-aware */}
+                        <XAxis dataKey={keys.x} name={keys.x} stroke="text.secondary" tickFormatter={formatNumber} />
+                        <YAxis dataKey={keys.y} name={keys.y} stroke="text.secondary" tickFormatter={formatNumber} />
                         <Tooltip
                             cursor={{ strokeDasharray: "3 3" }}
                             wrapperStyle={{ zIndex: 1100 }}
-                            formatter={(value) => formatNumber(value)}
+                            formatter={formatTooltip} // <-- Updated Formatter
                         />
                         <Legend />
                         <Scatter name="Data" data={data} fill="#009CDE" />
@@ -232,12 +251,10 @@ export default function DynamicDashboard({ dashboardData, rawData, isLoading, qu
         );
     }
     
-    // Destructure tables (added for Catalog View) from dashboardData
     const { summary, key_metrics, chart_specs, tables } = dashboardData;
     
     let parsedData = [];
     try {
-        // Handle both string and array rawData
         let raw = rawData;
         if (typeof raw === "string") {
             parsedData = JSON.parse(raw);
@@ -245,16 +262,13 @@ export default function DynamicDashboard({ dashboardData, rawData, isLoading, qu
             parsedData = raw;
         }
 
-        // Attempt to convert numeric values
         if (parsedData.length > 0) {
             const sample = parsedData[0];
             
-            // --- FIX: Correctly check if the *parsed number* is finite ---
             const numericKeys = Object.keys(sample).filter(
                 (k) =>
                     !isNaN(parseFloat(sample[k])) && isFinite(parseFloat(sample[k]))
             );
-            // --- END FIX ---
 
             if (numericKeys.length > 0) {
                 parsedData = parsedData.map((row) => {
@@ -275,7 +289,6 @@ export default function DynamicDashboard({ dashboardData, rawData, isLoading, qu
 
     return (
         <Box sx={{ height: "100%", overflowY: "auto", p: 2 }}>
-            {/* --- UPDATED: Show the question ONLY if NOT in Catalog Mode (tables is undefined) --- */}
             {question && !tables && (
                 <Paper elevation={2} sx={{ p: 2, mb: 2, borderRadius: 2, bgcolor: 'background.paper' }}>
                     <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: 'text.primary' }}>
@@ -286,7 +299,6 @@ export default function DynamicDashboard({ dashboardData, rawData, isLoading, qu
                     </Typography>
                 </Paper>
             )}
-            {/* --- END UPDATED --- */}
 
             {summary && (
                 <Paper elevation={2} sx={{ p: 2, mb: 2, borderRadius: 2, bgcolor: 'background.paper' }}>
@@ -317,7 +329,6 @@ export default function DynamicDashboard({ dashboardData, rawData, isLoading, qu
                 </Box>
             )}
             
-            {/* --- ADDED: Catalog Metadata Table (Only shows if 'tables' data exists) --- */}
             {tables && tables.length > 0 && (
                 <Paper elevation={2} sx={{ mb: 2, borderRadius: 2, bgcolor: 'background.paper', overflow: 'hidden' }}>
                     <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
@@ -351,7 +362,6 @@ export default function DynamicDashboard({ dashboardData, rawData, isLoading, qu
                     </TableContainer>
                 </Paper>
             )}
-            {/* --- END ADDED --- */}
 
             {chart_specs && chart_specs.length > 0 && (
                 <Grid container spacing={2}>

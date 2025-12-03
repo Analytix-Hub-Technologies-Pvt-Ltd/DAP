@@ -222,7 +222,8 @@ export default function AIChatbot() {
     pinnedDashboards, 
     setPinnedDashboards, 
     globalState,      
-    updateGlobalState 
+    updateGlobalState,
+    currency
   } = useAuth();
 
   const welcomeMessageTemplate = {
@@ -650,6 +651,7 @@ export default function AIChatbot() {
           prompt: newQuestionText,
           connectionInfo: activeConnection,
           catalogid: selectedCatalogId,
+          currency: currency
         },
         { 
             withCredentials: true,
@@ -1147,11 +1149,11 @@ export default function AIChatbot() {
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <img src={Logo} alt="Analytics Hub" style={{ width: 250, height: 50, objectFit: "contain" }} />
+            <img src={Logo} alt="Analytics Hub" style={{ width: 250, height: 50, objectFit: "contain", marginLeft: -30 }} />
     
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 45, marginRight: -5 }}>
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 60, marginRight: -5 }}>
             <TextField
               placeholder="Search dashboards, questions, users..."
               size="small"

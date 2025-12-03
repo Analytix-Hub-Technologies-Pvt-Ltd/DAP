@@ -5,7 +5,6 @@ import {
   Typography,
   AppBar,
   Toolbar,
-  IconButton,
   CssBaseline,
   Tooltip,
   Paper,
@@ -13,7 +12,11 @@ import {
   Switch,
   Button,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Select,          // <-- Added
+  MenuItem,        // <-- Added
+  FormControl,     // <-- Added
+  InputLabel       // <-- Added
 } from "@mui/material";
 import {
   ExitToApp as ExitToAppIcon,
@@ -24,10 +27,10 @@ import {
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import MiniSidebar from "./MiniSidebar";
-import Logo from "../assets/analytics_hub_logo_with_text1.png"; // Correct Logo Import
+import Logo from "../assets/analytics_hub_logo_with_text1.png";
 
 export default function SettingsPage() {
-  const { user, logout, mode, toggleTheme } = useAuth();
+  const { user, logout, mode, toggleTheme, currency, setCurrency } = useAuth(); // <-- Get currency props
   const [search, setSearch] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
@@ -40,17 +43,13 @@ export default function SettingsPage() {
   return (
     <>
       <CssBaseline />
-<AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-
-          {/* --- UNIFIED BRANDING --- */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <img src={Logo} alt="Analytics Hub" style={{ width: 250, height: 50, objectFit: "contain" }} />
+            <img src={Logo} alt="Analytics Hub" style={{ width: 250, height: 50, objectFit: "contain", marginLeft: -30  }} />
           </Box>
-          {/* ----------------------- */}
 
-          {/* --- SEARCH BAR --- */}
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 45, marginRight: -5 }}>
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: { xs: 1, sm: 6 }, marginLeft: 60, marginRight: -5 }}>
             <TextField
               placeholder="Search dashboards, questions, users..."
               size="small"
@@ -86,8 +85,11 @@ export default function SettingsPage() {
         <MiniSidebar currentPath={location.pathname} />
         <Box component="main" sx={{ flexGrow: 1, p: 4, bgcolor: "background.default", height: "100%", overflow: "auto" }}>
           <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: "text.primary" }}>Settings</Typography>
+          
           <Paper elevation={3} sx={{ p: 3, maxWidth: 600, mt: 3 }}>
             <Typography variant="h6" gutterBottom>Display Preferences</Typography>
+            
+            {/* Theme Toggle */}
             <FormControlLabel
               control={<Switch checked={mode === "dark"} onChange={toggleTheme} color="primary" />}
               label={
@@ -97,6 +99,25 @@ export default function SettingsPage() {
                 </Box>
               }
             />
+
+            {/* Currency Selector */}
+            <Box sx={{ mt: 3, maxWidth: 200 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="currency-select-label">Preferred Currency</InputLabel>
+                <Select
+                  labelId="currency-select-label"
+                  value={currency}
+                  label="Preferred Currency"
+                  onChange={(e) => setCurrency(e.target.value)}
+                >
+                  <MenuItem value="₹">INR (₹)</MenuItem>
+                  <MenuItem value="$">USD ($)</MenuItem>
+                  <MenuItem value="€">EUR (€)</MenuItem>
+                  <MenuItem value="£">GBP (£)</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
           </Paper>
         </Box>
       </Box>
